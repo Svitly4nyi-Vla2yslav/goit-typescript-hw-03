@@ -33,7 +33,8 @@
 // Наприклад, ось так:
 
 class Key {
-    constructor(private signature: number) {
+    private signature: number;
+    constructor() {
         this.signature = Math.random()
     }
     getSignature(): number {
@@ -43,16 +44,38 @@ class Key {
 
 
 class Person {
-    constructor(private key: Key ){
-        this.key
+    constructor(private key: Key) {
+        this.key = key;
     }
-getKey(){
-    return this.key
-}
+    getKey(): Key {
+        return this.key
+    }
 }
 
-abstract class House{
-    door: true | false;
+abstract class House {
+    protected door: boolean;
+    protected key: Key;
+    protected tenants: Person[] = [];
+    constructor(key: Key) {
+        this.key = key;
+    }
+    comeIn(person: Person): void {
+        if (this.door) {
+            this.tenants.push(person)
+        }
+    }
+    abstract openDoor(key: Key): void;
+}
+
+class MyHouse extends House {
+    constructor(key: Key) {
+        super(key)
+    }
+    openDoor(key: Key): void {
+        if (key.getSignature() === this.key.getSignature()) {
+            this.door = true;
+        }
+    }
 }
 
 const key = new Key();
